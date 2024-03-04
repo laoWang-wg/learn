@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 几乎任何在范式上支持了函数式编程的语言，都原生支持了 reduce()。
+      // 在 JS 中，基于 reduce()，我们不仅能够推导出其它数组方法，更能够推导出经典的函数组合过程。
+      //前置知识：Reduce 工作流分析
+      const arr = [1, 2, 3];
+      let initialValue = 0;
+      const add = (pre, cur) => pre + cur;
+      const sumArr = arr.reduce(add, initialValue);
+      console.log(sumArr);
+
+      // 小试牛刀：用 reduce() 推导 map()
+      // map工作流程用代码表达出来
+      const map = (arr, callback) => {
+        let newArr = [];
+        for (let i = 0; i < arr.length; i++) {
+          newArr.push(callback(arr[i]));
+        }
+        return newArr;
+      };
+      // Array.prototype.map的底层实现其实并不是这样的。
+      // Map 其实是 MapReduce
+
+      // 实现一个通用的 pipe 函数。
+      // const funcFlow = pipe(method1, method2, method3, method4,...., methodN)
+
+      function pipe(...funcs) {
+        function callback(input, func) {
+          return func(input);
+        }
+        return function (params) {
+          return funcs.reduce(callback, params);
+        };
+      }
+      // compose：倒序的 pipe
+
+      function compose(...funcs) {
+        function callback(input, func) {
+          return func(input);
+        }
+        return function (params) {
+          return funcs.reduceRight(callback, params);
+        };
+      }
+    </script>
+  </body>
+</html>

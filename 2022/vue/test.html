@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div>
+      <button onClick="btnClick()">++</button>
+    </div>
+    <script>
+      const deepClone = (target, map = new Map()) => {
+        if (typeof target !== 'object') return target;
+        if (target === null) return null;
+        if (map.has(target)) return map.get(target);
+        let res = Array.isArray(target) ? [] : {};
+        map.set(target, res);
+        for (let key in target) {
+          res[key] = deepClone(target[key], map);
+        }
+        return res;
+      };
+
+      let obj = { a: { b: 2 }, c: [1, 2, 3], d: null };
+      let result = deepClone(obj);
+      // console.log(obj === result);
+      // console.log('[ result ]-24', result);
+
+      const debounce = (time, fn) => {
+        let timer = null;
+        console.log('[ timer ]-32', timer);
+        let _this = this;
+        return function () {
+          if (timer) clearTimeout(timer);
+          timer = setTimeout(() => {
+            fn.call(_this);
+          }, time);
+        };
+      };
+      let num = 0;
+      const add = () => {
+        num++;
+        console.log('[ num ]-45', num);
+      };
+      const btnClick = debounce(3000, add);
+      // const btnClick = add;
+    </script>
+  </body>
+</html>

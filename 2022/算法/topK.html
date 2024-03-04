@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 对于topK问题，基本就是先排序 在取值，api sort(),不用sort 就是换成另一种排序(计数排序 桶排序 快排)，要保证时间复杂度
+      // 1.仓库管理员以数组 stock 形式记录商品库存表，其中 stock[i] 表示对应商品库存余量。请返回库存余量最少的 cnt 个商品余量，返回 顺序不限。
+      /**
+       * 输入：stock = [2,5,7,4], cnt = 1
+       * 输出：[2]
+       * **/
+      const inventoryManagement = (stock, cnt) => {
+        // return stock.sort((a,b) => a - b).slice(0, cnt)
+        return countingSort(stock, cnt, 100);
+      };
+      // 计数排序
+      const countingSort = (arr, k, maxValue) => {
+        let res = [];
+        let bucket = new Array(maxValue);
+
+        for (let i = 0; i < arr.length; i++) {
+          if (!bucket[arr[i]]) {
+            bucket[arr[i]] = 1;
+          } else {
+            bucket[arr[i]] = bucket[arr[i]] + 1;
+          }
+        }
+
+        // 计数
+        let sortIndex = 0;
+
+        for (let j = 0; j < bucket.length; j++) {
+          while (bucket[j] > 0 && sortIndex < k) {
+            res[sortIndex] = j;
+            sortIndex++;
+            bucket[j]--;
+          }
+          if (sortIndex === k) break;
+        }
+
+        return res;
+      };
+      let stock = [2, 5, 7, 4];
+      let cnt = 1;
+      let res = inventoryManagement(stock, cnt);
+      console.log('[ res ]-50', res);
+      //
+
+      //215. 数组中的第K个最大元素
+      /**
+       * 输入: [3,2,1,5,6,4], k = 2
+       * 输出: 5
+       * **/
+      let nums = [3, 2, 1, 5, 6, 4];
+      let k = 2;
+      var findKthLargest = function (nums, k) {
+        // let arr = nums.sort((a,b) => b - a)
+        // return arr[k -1]
+        let arr = quickSort(nums);
+        console.log('[ arr ]-62', arr);
+        return arr[k - 1];
+      };
+      // const quickSort = (arr) => {
+      //   let a = arr[0];
+      //   if (arr.length < 2) return arr;
+      //   let left = arr.slice(1).filter((item) => item < a);
+      //   let right = arr.slice(1).filter((item) => item > a);
+      //   return quickSort(right).concat([a]).concat(quickSort(left));
+      // };
+
+      //
+      const quickSort = (arr, left, right) => {
+        if (arr.length > 1) {
+          let lineIndex = patition(arr, left, right);
+          if (left < lineIndex - 1) {
+            quickSort(arr, left, lineIndex - 1);
+          }
+          if (right > lineIndex) {
+            quickSort(arr, lineIndex, right);
+          }
+        }
+        return arr;
+      };
+      const patition = (arr, left, right) => {
+        let base = arr[left];
+        let i = left;
+        let j = right;
+        while (i <= j) {
+          while (arr[i] < base) {
+            i++;
+          }
+          while (arr[j] > base) {
+            j--;
+          }
+          if (i <= j) {
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+            i++;
+            j--;
+          }
+        }
+        return i;
+      };
+      console.log('[ findKthLargest(nums, k); ]-75', findKthLargest(nums, k));
+    </script>
+  </body>
+</html>

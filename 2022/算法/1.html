@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 算法  数据结构 复杂度
+      // 双指针
+      // 1. 三数之和
+      let nums = [-1, 2, 1, -4];
+      let taget = 1;
+      // 思路：先排序 然后移动首尾指针
+      function TreeSumClosest(nums, target) {
+        let len = nums.length;
+        let res = Infinity;
+        nums.sort((a, b) => a - b); // [-4, -1, 1, 2]
+        for (let i = 0; i < len; i++) {
+          // nums[i] + nums[i+1] + nums[len-1] = target
+          let left = i + 1;
+          let right = len - 1;
+          while (left < right) {
+            let sum = nums[i] + nums[left] + nums[right];
+            if (Math.abs(sum - target) < Math.abs(res - target)) {
+              res = sum;
+            }
+            if (sum < target) {
+              left++;
+            } else if (sum > target) {
+              right--;
+            } else {
+              return sum;
+            }
+          }
+        }
+        return res;
+      }
+    </script>
+  </body>
+</html>

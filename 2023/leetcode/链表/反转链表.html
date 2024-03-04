@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>反转链表</title>
+  </head>
+  <body>
+    <script type="module">
+      import { Node, NodeList } from './index.js';
+      const l1 = new NodeList();
+      l1.addAtIndex(0, 1);
+      l1.addAtIndex(1, 2);
+      l1.addAtIndex(2, 4);
+      const list1 = l1.getList();
+      console.log(list1);
+      // 快慢指针 完全反转
+
+      function reverseList(head) {
+        let prev = new Node(null);
+        let cur = head;
+        while (cur !== null) {
+          let next = cur.next;
+          cur.next = prev;
+
+          prev = cur;
+          cur = next;
+        }
+        return prev;
+      }
+      // const list = reverseList(list1);
+      // console.log('[ list ]-33', list);
+
+      // 局部反转
+      // 反转从位置 m 到 n 的链表。请使用一趟扫描完成反转。 说明: 1 ≤ m ≤ n ≤ 链表长度。
+
+      function reverseBetween(head, m, n) {
+        let dummy = new Node(null);
+        let cur, prev, leftHead;
+        let p = dummy;
+        for (let i = 0; i < m - 1; i++) {
+          p = p.next;
+        }
+        // 找到反转头节点的前一项
+        leftHead = p;
+        // 头节点
+        let start = leftHead.next;
+
+        prev = start;
+        cur = prev.next;
+
+        for (let i = m; i < n; i++) {
+          let next = cur.next;
+
+          cur.next = prev;
+          prev = cur;
+          cur = next;
+        }
+        // 拼接 头尾
+        leftHead.next = prev;
+        start.next = cur;
+
+        return dummy.next;
+      }
+    </script>
+  </body>
+</html>

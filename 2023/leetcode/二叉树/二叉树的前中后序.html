@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      /*
+                A
+            B       C
+          D   E   -   F
+      */
+      const root = {
+        val: 'A',
+        left: {
+          val: 'B',
+          left: {
+            val: 'D',
+          },
+          right: {
+            val: 'E',
+          },
+        },
+        right: {
+          val: 'C',
+          right: {
+            val: 'F',
+          },
+        },
+      };
+      // 前序遍历 递归
+      function preorder(root) {
+        if (!root) return;
+        console.log(root.val);
+        root.left && preorder(root.left);
+        root.right && preorder(root.right);
+      }
+      preorder(root);
+      // 前序遍历 迭代 [根，左，右] -> [右，左，根]
+      function preorder1(root) {
+        let stack = [];
+        let res = [];
+        if (!root) return;
+        stack.push(root);
+        while (stack.length) {
+          let cur = stack.pop();
+          res.push(cur.val);
+          cur.right && stack.push(cur.right);
+          cur.left && stack.push(cur.left);
+        }
+        return res;
+      }
+      console.log('preorder1==', preorder1(root));
+
+      console.log('inorder======>');
+      // 中序遍历 递归
+      function inorder(root) {
+        if (!root) return;
+        root.left && inorder(root.left);
+        console.log(root.val);
+        root.right && inorder(root.right);
+      }
+      inorder(root);
+      // 中序遍历 迭代
+      function inorder1(root) {
+        let res = [];
+        let cur = root;
+        let stack = [];
+        while (cur || stack.length) {
+          while (cur) {
+            stack.push(cur);
+            cur = cur.left;
+          }
+          cur = stack.pop();
+          res.push(cur.val);
+          cur = cur.right;
+        }
+        return res;
+      }
+      console.log('inorder1===>', inorder1(root));
+      // 后序遍历 递归
+      function postorder(root) {
+        if (!root) return;
+        root.left && postorder(root.left);
+        root.right && postorder(root.right);
+        console.log(root.val);
+      }
+      console.log('postorder======>');
+      postorder(root);
+      // 后序遍历 迭代 [左，右，根] -> [根，右，左]
+      function postorder1(root) {
+        let stack = [];
+        let res = [];
+        stack.push(root);
+        while (stack.length) {
+          const cur = stack.pop();
+          res.unshift(cur.val);
+          cur.left && stack.push(cur.left);
+          cur.right && stack.push(cur.right);
+        }
+        return res;
+      }
+      console.log('postorder==>', postorder1(root));
+    </script>
+  </body>
+</html>

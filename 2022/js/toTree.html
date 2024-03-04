@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 例如将 input 转成output的形式
+      let input = [
+        {
+          id: 1,
+          val: '学校',
+          parentId: null,
+        },
+        {
+          id: 2,
+          val: '班级1',
+          parentId: 1,
+        },
+        {
+          id: 3,
+          val: '班级2',
+          parentId: 1,
+        },
+        {
+          id: 4,
+          val: '学生1',
+          parentId: 2,
+        },
+        {
+          id: 5,
+          val: '学生2',
+          parentId: 3,
+        },
+        {
+          id: 6,
+          val: '学生3',
+          parentId: 3,
+        },
+      ];
+      // 非递归
+      const toTree = (arr) => {
+        let data = arr.filter((item) => {
+          item.children = arr.filter((e) => {
+            return item.id === e.parentId;
+          });
+          return !item.parentId;
+        });
+        return data;
+      };
+      let res = toTree(input);
+      console.log('[ res ]-53', res);
+
+      // 递归
+      const toTree1 = (arr, parentId) => {
+        let children = [];
+        for (let i = 0; i < arr.length; i++) {
+          let node = arr[i];
+          if (node.parentId === parentId) {
+            children.push({
+              id: node.id,
+              val: node.val,
+              children: toTree1(arr, node.id),
+            });
+          }
+        }
+        return children;
+      };
+      let res2 = toTree1(input, null);
+      console.log('[ res2 ]-71', res2);
+    </script>
+  </body>
+</html>

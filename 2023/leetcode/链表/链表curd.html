@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 实现一个链表 NodeList
+      //
+      class Node {
+        constructor(val, next) {
+          this.val = val === undefined ? 0 : val;
+          this.next = next === undefined ? null : next;
+        }
+      }
+
+      class NodeList {
+        constructor() {
+          this.head = new Node(0);
+          this.size = 0;
+        }
+
+        get(index) {
+          if (index < 0 || index >= this.size) return -1;
+          let cur = this.head;
+          for (let i = 0; i <= index; i++) {
+            cur = cur.next;
+          }
+          return cur.val;
+        }
+        addAtHead(val) {
+          this.addAtIndex(0, val);
+        }
+        addAtTail() {
+          this.addAtIndex(this.size, val);
+        }
+        addAtIndex(index, val) {
+          if (index > this.size) return;
+          index = Math.max(0, index);
+          let cur = this.head;
+          for (let i = 0; i < index; i++) {
+            cur = cur.next;
+          }
+          let node = new Node(val);
+          node.next = cur.next;
+          cur.next = node;
+          this.size++;
+        }
+        deleteAtIndex(index) {
+          if (index < 0 || index >= this.size) return;
+          let cur = this.head;
+          for (let i = 0; i < index; i++) {
+            cur = cur.next;
+          }
+          this.size--;
+          cur.next = cur.next.next;
+        }
+      }
+      const linkedList = new NodeList();
+      linkedList.addAtHead(1);
+
+      linkedList.addAtIndex(1, 2);
+      linkedList.addAtIndex(2, 3);
+
+      linkedList.deleteAtIndex(2);
+      console.log(linkedList);
+    </script>
+  </body>
+</html>

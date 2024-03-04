@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 闭包是什么 => 生成安全作用域
+      // 应用场景
+      //
+      console.log('start');
+      setTimeout(() => {
+        console.log('children2');
+        Promise.resolve().then(() => {
+          console.log('children3');
+        });
+      }, 0);
+
+      new Promise(function (resolve, reject) {
+        console.log('children4');
+        setTimeout(function () {
+          console.log('children5');
+          resolve('children6');
+        }, 0);
+      }).then((res) => {
+        // flag
+        console.log('children7');
+        setTimeout(() => {
+          console.log(res);
+        }, 0);
+      });
+      start, children4 ,children2,children3,children5,children7,children3,children6
+    </script>
+  </body>
+</html>

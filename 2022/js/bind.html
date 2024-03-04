@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // v1.0：返回一个改变了 this 指向的方法
+      Function.prototype.bind1 = function (context) {
+        const _this = this;
+        return function () {
+          this.apply(context);
+        };
+      };
+
+      // v2.0：支持函数柯里化，分段接收参数
+      Function.prototype.bind2 = function (context) {
+        const _this = this;
+        let args = [...arguments].slice(1);
+        return function () {
+          let restArgs = [...arguments];
+          _this.apply(context, args.concat(restArgs));
+        };
+      };
+      // v2.1：拿到返回值
+
+      Function.prototype.bind21 = function (context) {
+        let _this = this;
+        let args = [...arguments].slice(1);
+        return function () {
+          let restArgs = [...arguments];
+          let value = _this.apply(context, args.concat(restArgs));
+          return value;
+        };
+      };
+      // bind 方法还有一个重要的的特点，绑定函数也可以使用 new 运算符构造，也就是说还可以将 bind 返回的函数作为构造函数。
+      // 提供的 this 值会被忽略，但传入的参数仍然生效。
+
+      // 不同的调用方法，函数的 this 指向不同，利用这个特点即可得知返回函数是否作为构造函数调用：
+
+      var func = function () {
+        console.log(this instanceof func);
+      };
+      // 作为普通函数调用
+      func(); // false
+      // 作为构造函数调用
+      new func(); // true
+      // 作为普通函数调用时，this 指向 window，结果为 false；
+      // 作为构造函数调用时，this 指向实例，实例的 __proto__ 属性指向构造函数的 prototype，结果为 true。
+
+      // v3.0：实现作为构造函数调用时this指向失效的效果
+      Function.prototype.bind3 = function (context) {
+        let _this = this;
+        let args = [...arguments].slice(1);
+        let fBound = function () {
+          let restArgs = [...arguments];
+          return _this.apply(
+            this instanceof fBound ? this : context,
+            args.concat(restArgs)
+          );
+        };
+        return fBound;
+      };
+
+      // v4.0：继承函数的原型
+      Function.prototype.bind4 = function (context) {
+        let self = this;
+        let args = [...arguments].slice(1);
+        let fBound = function () {
+          let restArgs = [...arguments];
+          /**
+           * 用 instanceof 来判断绑定函数 self 的原型是否在实例的原型链上：
+           * 1. 使用 new 运算符作为构造函数调用时，this 指向实例
+           *    因为我们在下面通过`fBound.prototype = this.prototype;`修改了 fBound 的原型为绑定函数的原型，所以此时结果为 true，this 指向实例。
+           * 2. 正常作为普通函数调用时，this 指向 window，此时结果为 false，this 指向绑定的 context；
+           */
+          return self.apply(
+            this instanceof self ? this : context,
+            args.concat(restArgs)
+          );
+        };
+        // 修改返回函数的 prototype 为绑定函数的 prototype，实例就可以继承函数的原型中的值
+        fBound.prototype = this.prototype;
+        return fBound;
+      };
+
+      // 我们修改返回函数的原型为绑定函数的原型，再配合 instanceof 来判断返回函数是否作为构造函数调用，思路是合理的，但直接让返回函数的原型指向绑定函数的原型就太粗暴了
+      // 解决这个问题我们可以用一个空函数作为中间变量，通过这个中间变量来维护原型关系，从而让 fBound.prototype 与 person.prototype 不再指向同一个原型对象。
+      // v5.0：最终版本
+      Function.prototype.bind5 = function (context) {
+        let args = [...arguments].slice(1);
+        let self = this;
+        let fBound = function () {
+          let restArgs = [...arguments];
+          return self.apply(
+            this instanceof self ? this : context,
+            args.concat(restArgs)
+          );
+        };
+        // 用一个空函数 fn 作为中间变量
+        let fn = function () {};
+        // 使中间变量 fn 的 prototype 指向绑定函数的 prototype
+        fn.prototype = this.prototype;
+        // 再使返回函数的 prototype 指向 fn 的实例，通过中间变量 fn 来维护原型关系
+        fBound.prototype = new fn();
+        return fBound;
+      };
+
+      // call
+      function _call(context) {
+        let args = [...arguments].slice(1);
+        context.fn = this || window;
+        let value = context.fn(args);
+        delete context.fn;
+        return value;
+      }
+    </script>
+  </body>
+</html>

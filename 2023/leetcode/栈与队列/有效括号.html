@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      //题目描述：给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串，判断字符串是否有效
+      const string = '({[(]})';
+      function isValid(string) {
+        if (!sting) return true;
+        const map = new Map([
+          ['(', ')'],
+          ['[', ']'],
+          ['{', '}'],
+        ]);
+        let stack = [];
+        for (let i = 0; i < string.length; i++) {
+          if (map.has(string[i])) {
+            stack.push(string[i]);
+          } else {
+            let item = stack.pop();
+            if (map.get(item) !== string[i]) {
+              return false;
+            }
+          }
+        }
+        return stack.length === 0;
+      }
+      console.log(isValid(string));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      let arr = [2, 5, 4, 3, 8]; // arr[i] < 10
+      // 冒泡排序
+      function bubbleSort(arr) {
+        let len = arr.length;
+        for (let i = 0; i < len; i++) {
+          for (let j = i + 1; j < len; j++) {
+            if (arr[i] > arr[j]) {
+              [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+          }
+        }
+        return arr;
+      }
+      let br = bubbleSort(arr);
+      console.log('[ br ]-24', br);
+      // 选择排序
+      function selectSort(arr) {
+        let len = arr.length;
+        let minIndex = 0;
+        for (let i = 0; i < len; i++) {
+          minIndex = i;
+          for (let j = i + 1; j < len; j++) {
+            if (arr[j] < arr[minIndex]) {
+              minIndex = j;
+            }
+          }
+          [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        }
+        return arr;
+      }
+      let sr = selectSort(arr);
+      console.log('[ sr ]-41', sr);
+      // 计数排序 牺牲空间换时间
+      function countingSort(arr) {
+        // 获取数组中最大的元素
+        let bucket = new Array(10);
+        for (let i = 0; i < arr.length; i++) {
+          if (!bucket[arr[i]]) {
+            bucket[arr[i]] = 0;
+          }
+          bucket[arr[i]]++;
+        }
+        console.log(bucket);
+        let res = [];
+        for (let j = 0; j < bucket.length; j++) {
+          if (bucket[j]) {
+            res.push(j);
+          }
+        }
+        return res;
+      }
+      let a = countingSort(arr);
+      console.log('[ a ]-32', a);
+    </script>
+  </body>
+</html>

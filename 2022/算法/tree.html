@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 树的遍历：深度优先 广度优先
+
+      let tree = {
+        val: 'a',
+        children: [
+          {
+            val: 'b',
+            children: [
+              {
+                val: 'd',
+                children: [],
+              },
+              {
+                val: 'e',
+                children: [],
+              },
+            ],
+          },
+          {
+            val: 'c',
+            children: [
+              {
+                val: 'f',
+                children: [],
+              },
+              {
+                val: 'g',
+                children: [],
+              },
+            ],
+          },
+        ],
+      };
+      // 1.深度优先(DFS) 递归
+      const dfs = (root) => {
+        console.log(root.val);
+        root.children.forEach((item) => dfs(item));
+      };
+      dfs(tree);
+      console.log('=======');
+      // 2.广度优先(BFS) 队列
+      const bfs = (root) => {
+        let q = [root];
+        while (q.length > 0) {
+          let o = q.shift();
+          console.log(o.val);
+          o.children.forEach((item) => {
+            q.push(item);
+          });
+        }
+      };
+      bfs(tree);
+    </script>
+  </body>
+</html>

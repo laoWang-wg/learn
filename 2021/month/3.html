@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+  </head>
+  <body>
+    <script>
+      const JsonTree = {
+        tagName: 'ul',
+        value: 'ul-0',
+        props: {
+          className: 'list',
+          'data-name': 'jsontree',
+        },
+        children: [
+          {
+            tagName: 'li',
+            value: 'li-0',
+            children: [
+              {
+                tagName: 'img',
+                value: 'li-img-0',
+                props: {
+                  src: '//img.alicdn.com/tps/TB1HwXxLpXXXXchapXXXXXXXXXX-32-32.ico',
+                  width: '16px',
+                },
+              },
+            ],
+          },
+          {
+            tagName: 'li',
+            value: 'li-1',
+            children: [
+              {
+                tagName: 'a',
+                value: 'li-1-a',
+                props: {
+                  href: 'https://www.aliyun.com',
+                  target: '_blank',
+                },
+                children: '阿里云',
+              },
+            ],
+          },
+        ],
+      };
+
+      //通过parseDOM函数（使用document.createElement，document.createTextNode，appendChild等方法），生成一颗DOM树（返回一个element元素）
+      const creatElm = (obj) => {
+        if (typeof obj === 'string') return document.createTextNode(obj);
+        let node = document.createElement(obj.tagName);
+        node.innerHTML = obj.value;
+        return node;
+      };
+
+      function parseDOM(tree) {
+        if (!tree.children) return creatElm(tree);
+        let root = creatElm(tree);
+        if (typeof tree.children === 'string') {
+          root.appendChild(creatElm(tree.children));
+        } else {
+          for (let i = 0; i < tree.children.length; i++) {
+            root.appendChild(parseDOM(tree.children[i]));
+          }
+        }
+        return root;
+      }
+
+      console.log(parseDOM(JsonTree));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      let tree = {
+        val: 'a',
+        left: {
+          val: 'b',
+          left: {
+            val: 'd',
+            left: null,
+            right: null,
+          },
+          right: {
+            val: 'e',
+            left: null,
+            right: null,
+          },
+        },
+        right: {
+          val: 'c',
+          left: {
+            val: 'f',
+            left: null,
+            right: null,
+          },
+          right: {
+            val: 'g',
+            left: null,
+            right: null,
+          },
+        },
+      };
+      // 二叉树的遍历
+      // 1.前序遍历
+
+      // 递归
+      const preorderTraversal = function (root) {
+        let res = [];
+        let fn = (node) => {
+          let o = node.val;
+          res.push(o.val);
+          node.left && fn(node.left);
+          node.right && fn(node.right);
+        };
+        fn(root);
+        return res;
+      };
+      // 遍历
+      const preorderTraversal1 = function (root) {
+        let res = [];
+        if (!root) return [];
+        let s = [root];
+        while (s.length) {
+          let o = s.pop();
+          res.push(o.val);
+          o.right && s.push(o.right);
+          o.left && s.push(o.left);
+        }
+
+        return res;
+      };
+      const val = preorderTraversal1(tree);
+      console.log('[ val ]-71', val);
+
+      // 中序 递归
+      const inorderTraversal = (root) => {
+        const res = [];
+        const fn = (node) => {
+          if (node) {
+            node.left && fn(node.left);
+            res.push(node.val);
+            node.right && fn(node.right);
+          }
+        };
+        fn(root);
+        return res;
+      };
+      let r = inorderTraversal(tree);
+      console.log('[ r ]-86', r);
+      //中序 遍历
+      const inorderTraversal1 = (root) => {
+        let s = [];
+        let res = [];
+        let node = root;
+        while (node || s.length) {
+          while (node) {
+            s.push(node.left);
+            node = node.left;
+          }
+          let o = s.pop();
+          res.push(o.val);
+          node = node.right;
+        }
+        return res;
+      };
+      //后序
+      const postorderTraversal = (root) => {
+        let res = [];
+        const fn = (node) => {
+          node.left && fn(node.left);
+          node.right && fn(node.right);
+          res.push(node.val);
+        };
+        fn(root);
+        return res;
+      };
+      //后序 遍历
+      const postorderTraversal1 = (root) => {
+        let res = [];
+        let stack = [root];
+        while (stack) {
+          let o = stack.pop();
+          res.unshift(o.val);
+          o.right && stack.push(o.right);
+          o.left && stack.push(o.left);
+        }
+        return res;
+      };
+    </script>
+  </body>
+</html>

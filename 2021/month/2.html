@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Title</title>
+
+		<style>
+			body{
+				margin: 200px;
+			}
+			#board {
+				display: flex;
+				flex-wrap: wrap;
+				width: 400px;
+				height: 400px;
+				transform: scale(1.5);
+				
+				/*border:1px solid gray;*/
+				/*border-top: 1px solid gray;*/
+			}
+			.cell,.no-top,.no-right {
+				/*border-right: 1px solid gray;*/
+				/*border-bottom: 1px solid gray;*/
+				height: 20px;
+				width: 20px;
+				box-sizing: border-box;
+				position: relative;
+			}
+			.cell:after {
+				content: "";
+				width: 20px;
+				height: 1px;
+				display: inline-block;
+				background-color: gray;
+				position: absolute;
+				top: 49%;
+				z-index: 1;
+			}
+			.cell:before {
+				content: "";
+				width: 1px;
+				height: 20px;
+				display: inline-block;
+				vertical-align: center;
+				background-color: gray;
+				position: absolute;
+				left: 49%;
+			}
+			.no-top:after {
+				content: "";
+				width: 20px;
+				height: 1px;
+				display: inline-block;
+				background-color: gray;
+				position: absolute;
+				top: 49%;
+				z-index: 1;
+			}
+			.no-top:before {
+				content: "";
+				width: 1px;
+				height: 10px;
+				display: inline-block;
+				vertical-align: center;
+				background-color: gray;
+				position: absolute;
+				bottom: 0%;
+				left: 10px;
+			}
+			.no-right::after{
+				content: "";
+				width: 10px;
+				height: 1px;
+				display: inline-block;
+				background-color: gray;
+				position: absolute;
+				top: 49%;
+				z-index: 1;
+			}
+			.no-right:before {
+				content: "";
+				width: 1px;
+				height: 20px;
+				display: inline-block;
+				vertical-align: center;
+				background-color: gray;
+				position: absolute;
+				bottom: 0%;
+				/* right: 0; */
+				left: 10px;
+			}
+
+			.red:before {
+				content: "";
+				position: absolute;
+				left: 2px;
+				right: 0;
+				top: 2px;
+				bottom: 0;
+				width: 15px;
+				height: 15px;
+				border-radius: 100%;
+				background-color: red;
+				z-index: 10;
+			}
+			.black:before {
+				content: "";
+				position: absolute;
+				left: 2px;
+				right: 0;
+				top: 2px;
+				bottom: 0;
+				width: 15px;
+				height: 15px;
+				border-radius: 100%;
+				background-color: black;
+				z-index: 10;
+			}
+		
+			
+		</style>
+	</head>	
+	<body>
+        <h1></h1>
+        <button id="clear">重置</button>
+			<div id="board"></div>
+
+		<script>
+			let widthNum = 20
+			let heightNum = 20
+            let value = 1 // 2 红方 // 1  黑方
+            let board = null
+            let total = 0
+            let win = false
+            let result = []
+            let init = function (){
+                 value = 1 // TRUE 红方 // false 黑方
+                 board = document.getElementById("board")
+                 total = 0
+                 win = false
+                 result = Array.from({ length: widthNum }, () =>
+                    Array.from({ length: heightNum }, () => 0)
+                )
+                show()
+            }
+            document.querySelector('#clear').addEventListener('click', function (){
+                init()
+            })
+			function show() {
+				board.innerHTML = ""
+				for (let i = 0; i < widthNum; i++) {
+					for (let j = 0; j < heightNum; j++) {
+						let node = document.createElement("div")
+						let value = result[i][j]
+						value === 2
+							? node.classList.add("red")
+							: value === 1
+							? node.classList.add("black")
+							: ""
+
+						node.setAttribute("data-pos", `[${i}, ${j}]`)
+					
+						if(i==0){
+							node.classList.add('no-top')
+						}
+						 if(j===19){
+							node.classList.add('no-right')
+						}
+						else{
+							node.classList.add("cell")
+						}
+
+						node.addEventListener("click", () => {
+							select(i, j)
+						})
+						board.appendChild(node)
+					}
+				}
+				console.log(result)
+			}
+			function select(i, j) {
+                if(win) return;
+				if (result[i][j] !== 0) return
+				// let value = change ? 1 : 2
+				result[i][j] = value
+				show()
+				total++
+				if (
+					judge(i, j, result[i][j]) ||
+					judge2(i, j, result[i][j]) ||
+					judge3(i, j, result[i][j]) ||
+					judge4(i, j, result[i][j])
+				) {
+                  document.querySelector('h1').innerHTML = value
+                    win = true
+				} else if (total === 20 * 20) {
+                    document.querySelector('h1').innerHTML = '和棋'
+                    win = true
+				}
+                value = 3 - value
+			}
+			// 列判断
+			function judge(i, j, value) {
+				let count = 0
+				let start = i
+				while (result[start--][j] == value) {
+					count++
+					if (count === 5) {
+						break
+					}
+				}
+				start = i + 1
+				while (result[start++][j] === value) {
+					count++
+					if (count === 5) {
+						break
+					}
+				}
+				return count === 5
+			}
+			// 行 判断
+			function judge2(i, j, value) {
+				let count = 0
+				let start = j
+				while (result[i][start--] === value) {
+					count++
+					if (count === 5) {
+						break
+					}
+				}
+				start = j + 1
+				while (result[i][start++] === value) {
+					count++
+					if (count === 5) {
+						break
+					}
+				}
+				return count === 5
+			}
+
+			function judge3(i, j, value) {
+				let count = 0
+				let start = i
+				let end = j
+				debugger
+				while (result[start--][end--] === value) {
+					count++
+					if (count === 5) {
+						break
+					}
+				}
+				start = i + 1
+				end = j + 1
+				while (result[start++][end++] === value) {
+					count++
+					if (count === 5) {
+						break
+					}
+				}
+				return count === 5
+			}
+			function judge4(i, j, value) {
+				let count = 0
+				let start = i
+				let end = j
+				while (result[start--][end++] === value) {
+					count++
+					if (count === 5) {
+						break
+					}
+				}
+				start = i + 1
+				end = j + 1
+				while (result[start++][end--] === value) {
+					count++
+					if (count === 5) {
+						break
+					}
+				}
+				return count === 5
+			}
+			init()
+			show()
+		</script>
+	</body>
+</html>

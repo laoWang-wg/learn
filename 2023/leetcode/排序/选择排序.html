@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 选择排序
+      // 区间内找最小索引 然后交换
+      const arr = [3, 6, 2, 1, 5, 4];
+      function selectSort(arr) {
+        const len = arr.length;
+        let minIndex;
+        for (let i = 0; i < len; i++) {
+          minIndex = i;
+          for (let j = i; j < len; j++) {
+            if (arr[j] < arr[minIndex]) {
+              minIndex = j;
+            }
+          }
+          if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+          }
+        }
+        return arr;
+      }
+      console.log(selectSort(arr));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const root = {
+        val: 'A',
+        left: {
+          val: 'B',
+          left: {
+            val: 'D',
+          },
+          right: {
+            val: 'E',
+          },
+        },
+        right: {
+          val: 'C',
+          right: {
+            val: 'F',
+          },
+        },
+      };
+      // DFS（深度优先搜索）
+      function preorder(root) {
+        if (!root) return;
+        console.log(root.val);
+        root.left && preorder(root.left);
+        root.right && preorder(root.right);
+      }
+      //深度优先搜索的本质是栈 递归的过程 就是入栈出栈的过程
+      // 函数调用的底层，是由栈来实现的。
+      // JS 会维护一个叫“函数调用栈”的东西，preorder每调用一次自己，
+      // 相关调用的上下文就会被push进函数调用栈中；待函数执行完毕后，对应的上下文又会从调用栈中被pop出来。
+      // 因此，即便二叉树的递归调用过程中，并没有出现栈这种数据结构，也依然改变不了递归的本质是栈的事实。
+
+      //BFS（广度优先搜索）
+      // 层序遍历 入队出队的过程
+      function BFS(root) {
+        if (!root) return;
+        let res = [];
+        let queue = [root];
+        while (queue.length) {
+          // 记录当前队列长度，也就是当前层
+          let len = queue.length;
+          let arr = [];
+          for (let i = 0; i < len; i++) {
+            let node = queue.shift();
+            arr.push(node.val);
+            node.left && queue.push(node.left);
+            node.right && queue.push(node.right);
+          }
+          res.push(arr);
+        }
+        return res;
+      }
+      console.log(BFS(root));
+    </script>
+  </body>
+</html>

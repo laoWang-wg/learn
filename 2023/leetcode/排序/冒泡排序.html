@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const arr = [3, 6, 2, 1, 5, 4];
+      // 冒泡排序 基本实现
+      function bubbleSort(arr) {
+        let len = arr.length;
+        for (let i = 0; i < len; i++) {
+          for (let j = 0; j < len - 1; j++) {
+            if (arr[j] > arr[i]) {
+              [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+          }
+        }
+        return arr;
+      }
+      console.log('[  bubbleSort(arr) ]-24', bubbleSort(arr));
+      // 优化一下
+      function bubbleSort1(arr) {
+        let len = arr.length;
+        for (let i = 0; i < len; i++) {
+          // 排除最后已经排完序的
+          for (let j = 0; j < len - 1 - i; j++) {
+            if (arr[j] > arr[i]) {
+              [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+          }
+        }
+        return arr;
+      }
+      console.log(bubbleSort1(arr));
+
+      // 最小复杂度 可能是O(n) , 原本就是个有序的数组
+      function bubbleSort2(arr) {
+        let len = arr.length;
+        for (let i = 0; i < len; i++) {
+          let flag = false;
+          for (let j = 0; j < len - 1 - i; j++) {
+            if (arr[j] > arr[i]) {
+              [(arr[i], arr[j])] = [arr[j], arr[i]];
+              flag = true;
+            }
+          }
+          if (!flag) return arr;
+        }
+        return arr;
+      }
+    </script>
+  </body>
+</html>

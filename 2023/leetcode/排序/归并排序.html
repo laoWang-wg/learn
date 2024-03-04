@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const arr = [3, 6, 2, 1, 5, 4];
+
+      // 归并排序 ： 分治思想  分解子数组，排序，合并
+      function mergeSort(arr) {
+        const len = arr.length;
+        if (len <= 1) return arr;
+        const mid = Math.floor(len / 2);
+        const leftArr = mergeSort(arr.slice(0, mid));
+        const rightArr = mergeSort(arr.slice(mid, len));
+        arr = mergeArr(leftArr, rightArr);
+        return arr;
+      }
+      // 合并两个有序数组
+      function mergeArr(arr1, arr2) {
+        let res = [];
+        const len1 = arr1.length;
+        const len2 = arr2.length;
+        let i = 0;
+        let j = 0;
+        while (i < len1 && j < len2) {
+          if (arr1[i] <= arr2[j]) {
+            res.push(arr1[i]);
+            i++;
+          } else {
+            res.push(arr2[j]);
+            j++;
+          }
+        }
+        if (i < len1) {
+          return res.concat(arr1.slice(i));
+        } else {
+          return res.concat(arr2.slice(j));
+        }
+      }
+
+      console.log(mergeSort(arr));
+    </script>
+  </body>
+</html>

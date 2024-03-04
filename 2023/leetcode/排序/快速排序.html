@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const arr = [3, 6, 2, 1, 5, 4];
+      // 快排 跟归并差不多，只不过是归并是分割合并数组，快排是在原有数组上直接操作
+      function quickSort(arr, left = 0, right = arr.length - 1) {
+        if (arr.length > 1) {
+          let lineIndex = partition(arr, left, right);
+          if (left < lineIndex - 1) {
+            quickSort(arr, left, lineIndex - 1);
+          }
+          if (lineIndex < right) {
+            quickSort(arr, lineIndex, right);
+          }
+        }
+        return arr;
+      }
+
+      function partition(arr, left, right) {
+        // 基准值
+        let pivotValue = arr[Math.floor(left + (right - left) / 2)];
+        let i = left;
+        let j = right;
+        while (i <= j) {
+          while (arr[i] < pivotValue) {
+            i++;
+          }
+          while (arr[j] > pivotValue) {
+            j--;
+          }
+          if (i <= j) {
+            swap(arr, i, j);
+            i++;
+            j--;
+          }
+        }
+        return i;
+      }
+      function swap(arr, i, j) {
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      console.log(quickSort(arr));
+    </script>
+  </body>
+</html>

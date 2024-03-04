@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        div{
+            border: 1px solid yellowgreen;
+        }
+        .wrap{
+            padding-top: 20px;
+            height: 200px;
+            width: 700px;
+            display: flex;
+           /*justify-content: space-around;*/
+        }
+        .one{
+            height: 100px;
+            width: 200px;
+
+        }
+        .two{
+            height: 100px;
+            width: 200px;
+        }
+        .three1{
+            height: 100px;
+            flex-grow: 3;
+        }
+        .three2{
+            height: 100px;
+            flex-grow: 4;
+        }
+        .three3{
+            height: 100px;
+            flex-grow: 3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrap">
+    <div class="three1">3</div>
+    <div class="one">1</div>
+    <div class="three2">3</div>
+    <div class="two">2</div>
+    <div class="three3">3</div>
+</div>
+
+</body>
+</html>

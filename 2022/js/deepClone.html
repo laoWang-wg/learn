@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function deepClone(target, map = new Map()) {
+        if (typeof target !== 'object') return target;
+        if (target === null) return null;
+        if (map.has(target)) {
+          return map.get(target);
+        }
+        let res = Array.isArray(target) ? [] : {};
+        map.set(target, res);
+        for (const key in target) {
+          res[key] = deepClone(target[key], map);
+        }
+        return res;
+      }
+      let a = {
+        b: 1,
+        c: {
+          f: function () {},
+          e: null,
+          d: 123,
+        },
+        d: [1, 2, 3],
+      };
+      let res = deepClone(a);
+      console.log('[ res ]-32', res);
+    </script>
+  </body>
+</html>

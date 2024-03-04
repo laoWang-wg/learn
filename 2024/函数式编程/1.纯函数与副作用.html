@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 纯函数
+      // 对于相同的输入，总是会得到相同的输出
+      // 在执行过程中没有语义上可观察的副作用。
+      // 什么是副作用？
+      // 在计算机科学中，函数副作用指当调用函数时，除了返回可能的函数值之外，还对主调用函数产生附加的影响。 ——维基百科
+
+      // Case #1：加法函数
+      let a = 1;
+      let b = 2;
+      function add() {
+        return a + b;
+      } // bad
+
+      // Case #2：姓名处理函数
+      function processName(firstName, secondName) {
+        const fullName = `${firstName}·${secondName}`;
+        console.log(`I am ${fullName}`);
+        return fullName;
+      }
+
+      processName('约瑟翰', '庞麦郎');
+      //console.log() 会在控制台打印一行文字，这改变了浏览器的控制台，属于对外部世界的影响，也就是说 processName 函数在执行过程中产生了副作用。
+
+      // Case #3：网络请求函数
+      async function getData(url) {
+        const response = await fetch(url);
+        const { data } = response;
+        return data;
+      }
+      //一个引入了网络请求的函数，从原则上来说是纯不起来的。
+      /*
+      请求获取到的 response 是动态的：需要通过网络请求获取的数据往往是动态的，对于相同的输入，服务端未必能够给到相同的输出。
+      请求可能出错：既然是网络请求，那就一定要考虑失败率的问题。网络拥塞、机房起火、后端删库跑路等等问题都有可能导致请求过程中的 Error，未经捕获的 Error 本身就是一种副作用。
+      */
+
+      // “纯”的本质——有且仅有【显式数据流】
+      // 定义中要求“输入输出数据流全是显式（Explicit）的”，那就是说数据只能以入参的形式进来，并且只能以返回值的形式出去。
+
+      // “头等函数”与“一等公民”
+      // 头等函数的核心特征是“可以被当做变量一样用”。
+      // 可以被当做变量一样用”意味着什么？它意味着：
+
+      // 可以被当作参数传递给其他函数
+      // 可以作为另一个函数的返回值
+      // 可以被赋值给一个变量
+
+      // 不可变数据解决方案：
+      // 1.immutable.js
+      // 实现方式： 为了达到这种“数据共享”的效果，持久化数据结构在底层依赖了一种经典的基础数据结构，那就是 Trie(字典树）。
+      // 2.immer.js
+      // Immer.js 实现 Immutability 的姿势非常有趣——它使用 Proxy，对目标对象的行为进行“元编程”。
+      // 定义一个 programmer 对象
+      import produce from 'immer';
+
+      // 这是我的源数据
+      const baseState = [
+        {
+          name: '修言',
+          age: 99,
+        },
+        {
+          name: '秀妍',
+          age: 100,
+        },
+      ];
+
+      // 定义数据的写逻辑
+      const recipe = (draft) => {
+        draft.push({ name: 'xiuyan', age: 101 });
+        draft[1].age = 102;
+      };
+
+      // 借助 produce，执行数据的写逻辑
+      const nextState = produce(baseState, recipe);
+
+      // 那么 produce 是如何工作的呢？
+      function produce(base, recipe) {
+        // 预定义一个 copy 副本
+        let copy;
+        // 定义 base 对象的 proxy handler
+        const baseHandler = {
+          set(obj, key, value) {
+            // 先检查 copy 是否存在，如果不存在，创建 copy
+            if (!copy) {
+              copy = { ...base };
+            }
+            // 如果 copy 存在，修改 copy，而不是 base
+            copy[key] = value;
+            return true;
+          },
+        };
+
+        // 被 proxy 包装后的 base 记为 draft
+        const draft = new Proxy(base, baseHandler);
+        // 将 draft 作为入参传入 recipe
+        recipe(draft);
+        // 返回一个被“冻结”的 copy，如果 copy 不存在，表示没有执行写操作，返回 base 即可
+        // “冻结”是为了避免意外的修改发生，进一步保证数据的纯度
+        return Object.freeze(copy || base);
+      }
+
+      // Produce 工作原理：将拷贝操作精准化
+      // produce 可以像 Immutable.js 一样，精准打击那些需要执行写操作的数据。将“变与不变”分离，确保只有变化的部分被处理，而不变的部分则将继续留在原地。
+      // 但 produce 并没有像 Immutable.js 一样打数据结构的主意，而是将火力集中对准了“拷贝”这个动作。
+
+      // 它严格地控制了“拷贝”发生的时机：当且仅当写操作确实发生时，拷贝动作才会被执行。
+    </script>
+  </body>
+</html>

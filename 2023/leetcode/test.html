@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 实现一个 getLevelByNodeId 的方法，传入节点的 id 值，返回节点的level
+      const root1 = {
+        id: 'root',
+        nodes: [
+          {
+            id: 'node-123', // level1 / [1,1]
+            nodes: [
+              {
+                id: 'node-234', // level2 / [2, 1]
+              },
+              {
+                id: 'node-678', // level2 / [2, 2]
+              },
+            ],
+          },
+          {
+            id: 'node-345', // level1 [1,2]
+            nodes: [
+              {
+                id: 'node-456', // level2 / [2,3]
+              },
+            ],
+          },
+        ],
+      };
+      function getLevelByNodeId(root, id) {
+        let res = [];
+        let q = [...root.nodes];
+        let level = 0;
+        while (q.length) {
+          let len = q.length;
+          level++;
+          console.log(level);
+          res.push(level);
+          for (let i = 0; i < len; i++) {
+            res.push(i + 1);
+            let cur = q.shift();
+            if (cur.id === id) {
+              return res;
+            }
+            cur.nodes && q.push(...cur.nodes);
+            res.pop();
+          }
+          res.pop();
+        }
+        return res;
+      }
+      console.log(getLevelByNodeId(root1, 'node-456'));
+
+      // 有一个对象表示的树形结构，大致如下，实际节点很多，层级很深不止 2 层
+      // 实现一个 getPathByNodeId 的方法，传入节点的 id 值，返回节点的路径
+      const root = {
+        id: 'root',
+        nodes: [
+          {
+            id: 'node-123', // path 1 / [1]
+            nodes: [
+              {
+                id: 'node-234', // path 1-1 / [1, 1]
+              },
+            ],
+          },
+          {
+            id: 'node-345', // path 2 ...
+            nodes: [
+              {
+                id: 'node-456', // path 2-1
+              },
+            ],
+          },
+        ],
+      };
+      const getPathByNodeId = (root, id) => {
+        let res = [];
+        function dfs(node) {
+          if (!node) return false;
+          if (!node.nodes) return false;
+          if (node.id === id) return true;
+          for (let i = 0; i < node.nodes.length; i++) {
+            if (dfs(node.nodes[i])) {
+              res.unshift(i + 1);
+              return true;
+            }
+          }
+          return false;
+        }
+        dfs(root, id);
+        return res;
+      };
+
+      console.log(getPathByNodeId(root, 'node-456'));
+
+      // let key = 'node-345';
+      // let r = getPathByNodeId(root, key).reduce((a, b) => {
+      //   return a[b].id === key ? a[b] : a[b].nodes;
+      // }, root.nodes);
+      // console.log(r);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      //题目描述：给定一个数组 nums 和滑动窗口的大小 k，请找出所有滑动窗口里的最大值。
+
+      // 示例: 输入: nums = [1,3,-1,-3,5,3,6,7], 和 k = 3 输出: [3,3,5,5,6,7]
+
+      //解释: 滑动窗口的位置
+      // ---------------
+      // [1 3 -1] -3 5 3 6 7
+      // 1 [3 -1 -3] 5 3 6 7
+      // 1 3 [-1 -3 5] 3 6 7
+      // 1 3 -1 [-3 5 3] 6 7
+      // 1 3 -1 -3 [5 3 6] 7
+      // 1 3 -1 -3 5 [3 6 7]
+      // 最大值分别对应：
+      // 3 3 5 5 6 7
+
+      const nums = [1, 3, -1, -3, 5, 3, 6, 7];
+      const k = 3;
+      // 双指针遍历  复杂度 O(kn)
+      function getNumsMax(nums, k) {
+        const len = nums.length;
+        let left = 0;
+        let right = k - 1;
+        let queue = [];
+        let res = [];
+        while (right < len) {
+          let max = calcMax(nums, left, right);
+          res.push(max);
+          left++;
+          right++;
+        }
+        return res;
+      }
+      function calcMax(arr, left, right) {
+        if (!arr || !arr.length) return;
+        let max = arr[left];
+        for (let i = left; i <= right; i++) {
+          if (arr[i] > max) {
+            max = arr[i];
+          }
+        }
+        return max;
+      }
+      console.log(getNumsMax(nums, k));
+
+      // 队列 实现 O(n)
+      function getNumsMax2(nums, k) {
+        let queue = [];
+        let res = [];
+        const len = nums.length;
+        for (let i = 0; i < len; i++) {
+          while (queue.length && nums[i] > nums[queue[queue.length - 1]]) {
+            queue.pop();
+          }
+          queue.push(i);
+          // if (i > queue[0] + k) {
+          //   queue.shift();
+          // }
+          // 当队头元素的索引已经被排除在滑动窗口之外时
+          while (queue.length && queue[0] <= i - k) {
+            // 将队头元素索引出队
+            deque.shift();
+          }
+          if (i >= k - 1) {
+            res.push(nums[queue[0]]);
+          }
+        }
+        return res;
+      }
+      console.log(getNumsMax2(nums, k));
+    </script>
+  </body>
+</html>

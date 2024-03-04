@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button id="button">btn</button>
+
+    <script>
+      // event loop
+      // 浏览器多线程，js 异步单线程
+      // 1.GUI渲染线程 2.js引擎线程（web worker） 3.浏览器事件线程（onclick）
+      // 4.定时器触发线程 5.http异步线程 6.EventLoop（事件循环）处理线程
+
+      //1.test
+      // setTimeout(() => {
+      //   console.log(1);
+      // }, 20);
+      // console.log(2);
+      // setTimeout(() => {
+      //   console.log(3);
+      // }, 10);
+      // console.log(4);
+      // console.time('AA');
+      // for (let i = 0; i < 90000000; i++) {
+      //   // do soming
+      // }
+      // console.timeEnd('AA'); // 耗时 约33ms
+      // console.log(5);
+      // setTimeout(() => {
+      //   console.log(6);
+      // }, 20);
+      // console.log(7);
+      // setTimeout(() => {
+      //   console.log(8);
+      // }, 10);
+      // 2,4, 'AA:55ms',5 ,7,3,1,8,6
+
+      // 2.test
+      async function async1() {
+        console.log('A');
+        await async2();
+        console.log('B');
+      }
+      async function async2() {
+        console.log('C');
+      }
+      // ==> 转化为promise
+      // function async1(){
+      //   console.log("A");
+      //   new Promise(resolve => {
+      //     console.log('C');
+      //     resolve() // async2
+      //   }).then(() => console.log("B"))
+      // }
+      console.log('D');
+      setTimeout(() => {
+        console.log('E');
+      }, 0);
+      async1();
+      new Promise((resolve) => {
+        console.log('F');
+        resolve();
+      }).then(() => {
+        console.log('G');
+      });
+      console.log('H');
+      // D, A,C,B,F,H,G,E
+      // D,A,C,F,H,B,G,E
+
+      // macro-task setTimeout setInterval requestAnimationFrame I/O UIrender ajax
+      // micro-tash process.nextTick Promise(实际是.then( )) Async/Await MutationObserver
+
+      //
+      const button = document.getElementById('button');
+      button.addEventListener('click', () => {
+        Promise.resolve().then(() => console.log('Microtask 1'));
+        console.log('Listener 1');
+      });
+      button.addEventListener('click', () => {
+        Promise.resolve().then(() => console.log('Microtask 2'));
+        console.log('Listener 2');
+      });
+      // press button
+      button.click();
+    </script>
+  </body>
+</html>
